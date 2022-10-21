@@ -1,11 +1,21 @@
-// import { Component } from "react";
-import "./search-box.styles.css";
+import { ChangeEvent } from 'react';
+import './search-box.styles.css';
 
-const SearchBox = ({ className, placeholder, onChangeHandler }) => (
+type SearchBoxProps = {
+  className: string;
+  placeholder?: string;
+  onChangeHandler: (event: ChangeEvent<HTMLInputElement>) => void;
+};
+
+const SearchBox = ({
+  className,
+  placeholder,
+  onChangeHandler,
+}: SearchBoxProps) => (
   <input
-    className={className}
+    className={`search-box ${className}`}
     // gererate a search field with an x to clear the field
-    type="search"
+    type='search'
     placeholder={placeholder}
     // we changed this to not re-run everytime its intialized
     onChange={onChangeHandler}
