@@ -1,28 +1,38 @@
 // import { Component } from "react"; // used for class components
-import { useState, useEffect } from "react"; // used for creating hooks
-import CardList from "./components/card-list/card-list.component";
-import SearchBox from "./components/search-box/search-box.component";
+import { useState, useEffect, ChangeEvent } from 'react'; // used for creating hooks
+import CardList from './components/card-list/card-list.component';
+import SearchBox from './components/search-box/search-box.component';
+import { getData } from './utils/data.utils';
 
 // import logo from "./logo.svg";
-import "./App.css";
+import './App.css';
+
+export type Monster = {
+  id: string;
+  name: string;
+  email: string;
+};
 
 // writing a functional component
 // a react functional component takes arguments that are the props of this component and then runs as JSX
 const App = () => {
-  console.log("render");
+  console.log('render');
 
   // use state will ecapsulate individual values from that state, each hook only hooks into one value
-  const [searchField, setSearchField] = useState(""); // [value, setValue]
-  const [title, setTitle] = useState("");
-  const [monsters, setMonsters] = useState([]);
+  // const [searchField, setSearchField] = useState(''); // [value, setValue]
+  const [searchField, setSearchField] = useState('');
+  const [monsters, setMonsters] = useState<Monster[]>([]);
   const [filteredMonsters, setFilterMonsters] = useState(monsters);
 
   // the only time this function is called is on mount due to the empty array dependency
   useEffect(() => {
-    console.log("effect fired");
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((users) => setMonsters(users));
+    const fetchUsers = async () => {
+      const users = await getData<Monster[]>(
+        'https://jsonplaceholder.typicode.com/users'
+      );
+      setMonsters(users);
+    };
+    fetchUsers();
   }, []);
 
   useEffect(() => {
@@ -32,32 +42,27 @@ const App = () => {
     setFilterMonsters(newFilteredMonsters);
   }, [monsters, searchField]);
 
-  const onSearchChange = (event) => {
+  const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const searchFieldString = event.target.value.toLocaleLowerCase();
     setSearchField(searchFieldString);
   };
 
-  const onTitleChange = (event) => {
-    const searchFieldString = event.target.value.toLocaleLowerCase();
-    setTitle(searchFieldString);
-  };
+  // const onTitleChange = (event) => {
+  //   const searchFieldString = event.target.value.toLocaleLowerCase();
+  //   setTitle(searchFieldString);
+  // };
 
   // the return of a functional component renders the UI
   return (
-    <div className="App">
-      <h1 className="app-title">{title}</h1>
+    <div className='App'>
+      <h1 className='app-title'>Monstrosities</h1>
 
       <SearchBox
-        className="search-box"
+        className='search-box'
         onChangeHandler={onSearchChange}
-        placeholder="search monsters"
+        placeholder='search monsters'
       />
       <br />
-      <SearchBox
-        className="title-search-box"
-        onChangeHandler={onTitleChange}
-        placeholder="set title"
-      />
       <CardList monsters={filteredMonsters} />
     </div>
   );

@@ -1,9 +1,14 @@
 // import { Component } from "react";
+import { Monster } from "../../App";
 
 import "./card.styles.css";
 
+type CardProps = {
+  monster: Monster;
+}
+
 // functional component
-const Card = ({ monster }) => {
+const Card = ({ monster }: CardProps) => {
   const { id, name, email } = monster;
   return (
     <div className="card-container" key={id}>
